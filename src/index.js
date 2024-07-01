@@ -17,67 +17,37 @@ const fragShader = createShader(gl, gl.FRAGMENT_SHADER, frag)
 // 创建对象
 const program = createProgram(gl, vertShader, fragShader);
 // 使用刚刚创建好的着色器程序
+gl.useProgram(program);
 
-if (!gl.getShaderParameter(vertShader, gl.COMPILE_STATUS)) {
-    console.error('Vertex shader compile failed:', gl.getShaderInfoLog(vertShader));
-    // 处理错误...  
-}
-
-if (!gl.getShaderParameter(fragShader, gl.COMPILE_STATUS)) {
-    console.error('Fragment shader compile failed:', gl.getShaderInfoLog(fragShader));
-    // 处理错误...  
-}
-gl.useProgram(program)
-
-// 找到变量提供的地址
-// 顶点信息用attribute
+// 定义三个顶点
+const point = [1.0, 0.5, 0.2, 0.3, 0.6, 0.8]
+// 读取position地址
 const a_position = gl.getAttribLocation(program, 'a_position');
-const a_screen_size = gl.getAttribLocation(program, 'a_screen_size');
-// 颜色信息用uniform
-const u_color = gl.getUniformLocation(program, 'u_color');
 
-// 赋值canvas的宽高信息
-gl.vertexAttrib2f(a_screen_size, canvas.width, canvas.height)
+// 转多条数据
+// 创建缓冲区
+const buffer = gl.createBuffer();
+// 绑定缓冲区
+gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 
+// 将数据写入缓冲区
+// webgl浮点数占用4个字节,32位
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(point), gl.STATIC_DRAW)
 
-const point = []
-canvas.addEventListener('click', (e) => {
-    const x = e.clientX
-    const y = e.clientY
-    const color = randomColor();
-    point.push({
-        x,
-        y,
-        color
-    })
-    // 渲染
-    // 设置清空画布颜色为黑色
-    gl.clearColor(0.0, 0.0, 0.0, 1.0)
+// 将缓冲区数据和a_position关联
+gl.enableVertexAttribArray(a_position);
 
-    // 用上一步设置的清空画布
-    gl.clear(gl.COLOR_BUFFER_BIT)
+const size = 2; //每次读取两个数据
+const type = gl.FLOAT; // 数据类型
+const normalize = false; // 是否归一化
+const stride = 0; // 间隔
+const offset = 0; // 偏移量
 
-    // 绘制点
-    for (let i = 0; i < point.length; i++) {
-        const color = point[i].color;
-        // 设置点位
-        gl.vertexAttrib2f(a_position, point[i].x, point[i].y);
-        // 设置颜色
-        gl.uniform4f(u_color, color.r, color.g, color.b, color.a)
-        // 绘制点
-        gl.drawArrays(gl.POINTS, 0, 1)
-    }
-})
+gl.vertexAttribPointer(a_position, size, type, normalize, stride, offset)
 
-
-// 绘制
-// 顶点数据
-gl.clearColor(0.0, 0.0, 0.0, 1.0)
-
-// 传入上一次的颜色
+// 清空画布
+gl.clearColor(0, 0, 0, 1)
 gl.clear(gl.COLOR_BUFFER_BIT)
+
 // 绘制
-// 参数1:绘制类型
-// 参数2:从哪个点开始绘制
-// 参数3:绘制数量
-// gl.drawArrays(gl.POINTS, 0, 1)
+gl.drawArrays(gl.TRIANGLES, 0, 3)
