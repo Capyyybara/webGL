@@ -16,11 +16,28 @@ const fragShader = createShader(gl, gl.FRAGMENT_SHADER, frag)
 // 2. 创建program来将shader附着到程序中
 const program = createProgram(gl, vertShader, fragShader);
 
-// 3. 使用shader
-gl.linkProgram(program)
 gl.useProgram(program)
+const a_position = gl.getAttribLocation(program, 'a_position');
+const a_screen_size = gl.getAttribLocation(program, 'a_screen_size');
+// 给宽高赋值
+gl.vertexAttrib2f(a_screen_size, canvas.width, canvas.height);
 
-// 4. 进行绘制
+const point = [];
+
+const buffer = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+
+gl.enableVertexAttribArray(a_position);
+gl.vertexAttribPointer(a_position, 2, gl.FLOAT, false, 0, 0);
+
+canvas.addEventListener('click', (e) => {
+    point.push(e.pageX, e.pageY);
+    if (point.length % 6 == 0) {
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(point), gl.STATIC_DRAW);
+        gl.clear(gl.COLOR_BUFFER_BIT)
+        gl.drawArrays(gl.TRIANGLES, 0, point.length / 2);
+    }
+})
+
 gl.clearColor(0.0, 0.0, 0.0, 1.0)
 gl.clear(gl.COLOR_BUFFER_BIT)
-gl.drawArrays(gl.POINTS, 0, 1)
