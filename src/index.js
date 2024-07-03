@@ -35,7 +35,7 @@ canvas.addEventListener('click', (e) => {
     if (point.length > 0) {
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(point), gl.STATIC_DRAW);
         gl.clear(gl.COLOR_BUFFER_BIT)
-        gl.drawArrays(gl.LINES, 0, point.length / 2);
+        gl.drawArrays(gl.LINE_STRIP, 0, point.length / 2);
     }
 })
 
