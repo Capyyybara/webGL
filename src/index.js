@@ -32,10 +32,10 @@ gl.vertexAttribPointer(a_position, 2, gl.FLOAT, false, 0, 0);
 
 canvas.addEventListener('click', (e) => {
     point.push(e.pageX, e.pageY);
-    if (point.length % 6 == 0) {
+    if (point.length > 0) {
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(point), gl.STATIC_DRAW);
         gl.clear(gl.COLOR_BUFFER_BIT)
-        gl.drawArrays(gl.TRIANGLES, 0, point.length / 2);
+        gl.drawArrays(gl.LINES, 0, point.length / 2);
     }
 })
 
