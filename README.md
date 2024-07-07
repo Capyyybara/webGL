@@ -7,3 +7,4 @@
 * 基本线段绘制 `bcdcd65937fbf07fb0d545ce0b8af46873515782`
 * 带状线段 `4acaf51c49adf70c3892ff55d07bd6eec6a7e64b`
 * 绘制渐变三角形 `dd103ba8b5c4b96733506ba0919a04acbc204466`
+* 渐变三角形单个buffer实现 `d61f558d740566301972a54baa3b724b0e722922`
