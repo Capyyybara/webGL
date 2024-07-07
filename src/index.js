@@ -1,6 +1,6 @@
 import vert from './glsl//index.vert'
 import frag from './glsl/index.frag'
-import { createProgram, createShader, randomColor,createBuffer } from './glsl/util'
+import { createProgram, createShader, randomColor, createBuffer } from './glsl/util'
 
 /**
  * @type {HTMLCanvasElement}
@@ -28,34 +28,25 @@ const a_screen_size = gl.getAttribLocation(program, 'a_screen_size');
 // 给宽高赋值
 gl.vertexAttrib2f(a_screen_size, canvas.width, canvas.height);
 
-const positionBuffer = createBuffer(gl, a_position, {
-    size: 2,
-    type: gl.FLOAT,
-    normalize: false,
-    stride: 0,
-    offset: 0,
-})
+gl.enableVertexAttribArray(a_position)
+gl.enableVertexAttribArray(a_color)
 
-const colorBuffer = createBuffer(gl, a_color, {
-    size: 4,
-    type: gl.FLOAT,
-    normalize: false,
-    stride: 0,
-    offset: 0,
-})
+const buffer = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+
+gl.vertexAttribPointer(a_position, 2, gl.FLOAT, false, 24, 0);
+gl.vertexAttribPointer(a_color, 4, gl.FLOAT, false, 24, 8)
 
 canvas.addEventListener('click', (e) => {
     point.push(e.pageX, e.pageY);
     const temp_color = randomColor();
-    color.push(temp_color.r, temp_color.g, temp_color.b, temp_color.a);
+    point.push(temp_color.r, temp_color.g, temp_color.b, temp_color.a);
     if (point.length > 0) {
-        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(point), gl.STATIC_DRAW);
+        if (point.length % 18 == 0) {
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(point), gl.STATIC_DRAW)
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(color), gl.STATIC_DRAW);
-        if (point.length % 6 == 0) {
-            gl.clear(gl.COLOR_BUFFER_BIT);
+            gl.clear(gl.COLOR_BUFFER_BIT)
             gl.drawArrays(gl.TRIANGLES, 0, point.length / 2);
         }
     }

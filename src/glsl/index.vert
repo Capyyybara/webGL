@@ -30,16 +30,11 @@ varying vec4 v_color;
 // varying vec4 v_color;
 
 void main() {
+    // 顶点坐标
     vec2 position = (a_position / a_screen_size) * 2.0 - 1.0;
     position = position * vec2(1.0, -1.0);
-    gl_Position = vec4(position, 0.0, 1.0);
-    // 使用varying在顶点着色器中接收到的值会被传递到片元着色器中
-    v_color = a_color;
-    // 顶点坐标
-    // vec2 position = (a_position / a_screen_size) * 2.0 - 1.0;
-    // position = position * vec2(1.0, -1.0);
 
-    // gl_Position = vec4(position, 0.0, 1.0);
+    gl_Position = vec4(position, 0.0, 1.0);
     // 使用varying在顶点着色器中，接收到的值会被传递到片元着色器中
-    // v_color = a_color;
+    v_color = a_color;
 }
